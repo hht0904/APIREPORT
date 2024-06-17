@@ -23,12 +23,12 @@ if __name__ == "__main__":
         .getOrCreate()
 
     # Read static data to infer schema
-    static_df = spark.read.json("hdfs://hadoop-namenode:8082/data/*")
+    static_df = spark.read.json("hdfs://hadoop-namenode:8020/data/*")
 
     # Read streaming data from HDFS
     streaming_df = spark.readStream \
         .schema(static_df.schema) \
-        .json("hdfs://hadoop-namenode:8082/data/*")
+        .json("hdfs://hadoop-namenode:8020/data/*")
 
     # Apply the same transformations on the streaming DataFrame
     id_column = col("id")
