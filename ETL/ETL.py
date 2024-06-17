@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Initialize Spark session with Hive support
     spark = SparkSession.builder \
         .appName("ETL Report") \
-        .config("hive.metastore.uris", "thrift://namenode:9083") \
+        .config("hive.metastore.uris", "thrift://hadoop-namenode:9083") \
         .config("spark.sql.warehouse.dir", "/user/hive/warehouse") \
         .config("hive.serialization.extend.nesting.levels", "10") \
         .config("hive.exec.dynamic.partition.mode", "nonstrict") \
@@ -23,12 +23,12 @@ if __name__ == "__main__":
         .getOrCreate()
 
     # Read static data to infer schema
-    static_df = spark.read.json("hdfs://namenode:9000/data1/*")
+    static_df = spark.read.json("hdfs://hadoop-namenode:8082/data/*")
 
     # Read streaming data from HDFS
     streaming_df = spark.readStream \
         .schema(static_df.schema) \
-        .json("hdfs://namenode:9000/data1/*")
+        .json("hdfs://hadoop-namenode:8082/data/*")
 
     # Apply the same transformations on the streaming DataFrame
     id_column = col("id")
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     query = select_df1.writeStream \
         .outputMode("append") \
         .foreachBatch(write_to_hive) \
-        .option("checkpointLocation", "/home/hadoop/checkpointLocation1/") \
+        .option("checkpointLocation", "/home/hadoop/checkpointLocation/") \
         .start() \
         .awaitTermination()
 
