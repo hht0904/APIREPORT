@@ -3,7 +3,7 @@ from flask_cors import CORS
 from config.database import Database
 
 
-db = Database(host='192.168.1.160', port=10000)
+db = Database(host='hadoop-namenode', port=10000)
 
 
 def create_app():
